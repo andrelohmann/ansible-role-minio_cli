@@ -1,0 +1,24 @@
+---
+galaxy_info:
+  role_name: minio_cli
+  author: andrelohmann
+  description: Install the minio cli client mc
+  company: CloudCourse GmbH
+
+  license: MIT
+
+  min_ansible_version: "2.11"
+
+  platforms:
+  - name: Ubuntu
+    versions:
+    - jammy
+    - focal
+
+  galaxy_tags:
+  - minio
+  - mc
+  - cli
+
+dependencies: []
+...

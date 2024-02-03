@@ -1,2 +1,3 @@
-# ansible-role-minio_cli
+# minio_cli
+
 Install the minio cli tool mc
