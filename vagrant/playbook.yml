@@ -1,0 +1,41 @@
+---
+- hosts: all
+  become: true
+  become_method: sudo
+
+  vars:
+
+    minio_admin_user: minioadmin
+    minio_admin_pass: minioadmin
+    minio_test_accesskey: 43D9EPVMO0QGJ38GXTDO
+    minio_test_secretkey: NUf8Ucvs0A84m8Ml8P4ypvMdGYigStjtJdmHeSqL
+
+    minio_config:
+    - key: MINIO_VOLUMES
+      value: '"/opt/minio"'
+    - key: MINIO_ROOT_USER
+      value: "{{ minio_admin_user }}"
+    - key: MINIO_ROOT_PASSWORD
+      value: "{{ minio_admin_pass }}"
+    - key: MINIO_OPTS
+      value: '"--console-address :9001"'
+    - key: MINIO_SERVER_URL
+      value: '"http://minio-cli.lokal:9000"'
+
+  pre_tasks:
+  - name: check for file custom_vars.yml
+    stat:
+      path: custom_vars.yml
+    register: stat_custom_vars
+  - name: load custom vars, if existent
+    include_vars:
+      file: custom_vars.yml
+    when: stat_custom_vars.stat.exists
+
+  roles:
+  - andrelohmann.root_colored_prompt
+  - andrelohmann.minio
+  - ansible-role-minio_cli
+  - mc_test_setup
+
+...
