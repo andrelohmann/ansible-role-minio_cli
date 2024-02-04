@@ -27,7 +27,7 @@
   - andrelohmann.minio
 
   tasks:
-  
+
   - name: Flush the minio handler
     ansible.builtin.meta: flush_handlers
 
