@@ -1,0 +1,94 @@
+---
+
+- name: Flush the minio handler
+  ansible.builtin.meta: flush_handlers
+
+# Pause for 60 seconds to let unicorn restart
+- name: Pause | Wait for 60 seconds
+  ansible.builtin.pause:
+    seconds: 60
+
+- name: Minio | Copy the bucket policy
+  ansible.builtin.copy:
+    src: test-bucket-policy.json
+    dest: "/opt/test-bucket-policy.json"
+    owner: vagrant
+    group: vagrant
+    mode: 0644
+
+- name: Minio | Set the mc alias "myminio"
+  # username and passwrod extracted from docker-compose file
+  ansible.builtin.shell: "mc alias set myminio http://minio-cli.lokal:9000 {{ minio_admin_user }} {{ minio_admin_pass }}"
+  args:
+    executable: /bin/bash
+    chdir: /opt/
+
+- name: Minio | Create the test buckets
+  ansible.builtin.shell: "mc mb myminio/{{ item }}"
+  args:
+    executable: /bin/bash
+    chdir: /opt/
+  with_items:
+  - test-1
+  - test-2
+
+- name: Minio | Create the buckets policy
+  ansible.builtin.shell: mc admin policy create myminio test-buckets test-bucket-policy.json
+  args:
+    executable: /bin/bash
+    chdir: /opt/
+
+- name: Minio | Create the test user
+  ansible.builtin.shell: mc admin user add myminio test1 test1.pw
+  args:
+    executable: /bin/bash
+    chdir: /opt/
+
+- name: Minio | Create the test group and add user test1
+  ansible.builtin.shell: mc admin group add myminio test test1
+  args:
+    executable: /bin/bash
+    chdir: /opt/
+
+- name: Minio | Attach the buckets policy to the test group
+  ansible.builtin.shell: mc admin policy attach myminio test-buckets --group test
+  args:
+    executable: /bin/bash
+    chdir: /opt/
+
+- name: Minio | Create AK / SK
+  ansible.builtin.shell: "mc admin user svcacct add --access-key \"{{ minio_test_accesskey }}\" --secret-key \"{{ minio_test_secretkey }}\" myminio test1"
+  args:
+    executable: /bin/bash
+    chdir: /opt/
+  register: _minio_user
+
+- name: Minio | Dump minio_user
+  ansible.builtin.debug:
+    var: _minio_user
+
+- name: Minio | Set the mc alias "test1"
+  # username and passwrod extracted from docker-compose file
+  ansible.builtin.shell: "mc alias set mytest1 http://minio-cli.lokal:9000 {{ minio_test_accesskey }} {{ minio_test_secretkey }}"
+  args:
+    executable: /bin/bash
+    chdir: /opt/
+
+- name: Minio | Upload test-bucket-policy.json to bucket test-1
+  ansible.builtin.shell: mc cp test-bucket-policy.json mytest1/test-1/
+  args:
+    executable: /bin/bash
+    chdir: /opt/
+
+- name: Minio | List bucket content
+  ansible.builtin.shell: mc ls mytest1/test-1/
+  args:
+    executable: /bin/bash
+    chdir: /opt/
+  register: _bucket_content
+
+- name: Minio | Dump _bucket_content
+  ansible.builtin.debug:
+    var: _bucket_content
+
+...
