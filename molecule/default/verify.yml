@@ -27,6 +27,14 @@
   - andrelohmann.minio
 
   tasks:
+  
+  - name: Flush the minio handler
+    ansible.builtin.meta: flush_handlers
+
+  # Pause for 60 seconds to let unicorn restart
+  - name: Pause | Wait for 60 seconds
+    ansible.builtin.pause:
+      seconds: 60
 
   - name: Minio | Copy the bucket policy
     ansible.builtin.copy:
