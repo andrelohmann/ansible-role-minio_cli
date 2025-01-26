@@ -40,7 +40,7 @@
     ansible.builtin.copy:
       src: files/test-bucket-policy.json
       dest: "/opt/test-bucket-policy.json"
-      mode: 0644
+      mode: "0644"
 
   - name: Minio | Set the mc alias "myminio"
     # username and passwrod extracted from docker-compose file
