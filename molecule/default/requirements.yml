@@ -1,7 +1,7 @@
 ---
 
-roles:
-- andrelohmann.minio
+roles: []
+# - name: andrelohmann.minio
 
 collections: []
 

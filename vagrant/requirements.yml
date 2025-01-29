@@ -1,8 +1,8 @@
 ---
 
 roles:
-- andrelohmann.root_colored_prompt
-- andrelohmann.minio
+- name: andrelohmann.root_colored_prompt
+- name: andrelohmann.minio
 
 collections: []
 
