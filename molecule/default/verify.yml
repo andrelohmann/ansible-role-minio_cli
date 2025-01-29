@@ -24,7 +24,7 @@
       value: '"http://localhost:9000"'
 
   roles:
-  - name: andrelohmann.minio
+  - role: andrelohmann.minio
 
   tasks:
 
