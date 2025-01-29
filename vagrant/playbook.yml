@@ -1,7 +1,8 @@
 ---
-- hosts: all
+- name: Install
+  hosts: all
   become: true
-  become_method: sudo
+  become_method: ansible.builtin.sudo
 
   vars:
 
@@ -33,9 +34,9 @@
     when: stat_custom_vars.stat.exists
 
   roles:
-  - andrelohmann.root_colored_prompt
-  - andrelohmann.minio
-  - ansible-role-minio_cli
-  - mc_test_setup
+  - name: andrelohmann.root_colored_prompt
+  - name: andrelohmann.minio
+  - name: ansible-role-minio_cli
+  - name: mc_test_setup
 
 ...
