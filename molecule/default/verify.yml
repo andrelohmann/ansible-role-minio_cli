@@ -48,6 +48,7 @@
     args:
       executable: /bin/bash
       chdir: /opt/
+    changed_when: false
 
   - name: Minio | Create the test buckets
     ansible.builtin.shell: "mc mb myminio/{{ item }}"
@@ -57,30 +58,35 @@
     with_items:
     - test-1
     - test-2
+    changed_when: false
 
   - name: Minio | Create the buckets policy
     ansible.builtin.shell: mc admin policy create myminio test-buckets test-bucket-policy.json
     args:
       executable: /bin/bash
       chdir: /opt/
+    changed_when: false
 
   - name: Minio | Create the test user
     ansible.builtin.shell: mc admin user add myminio test1 test1.pw
     args:
       executable: /bin/bash
       chdir: /opt/
+    changed_when: false
 
   - name: Minio | Create the test group and add user test1
     ansible.builtin.shell: mc admin group add myminio test test1
     args:
       executable: /bin/bash
       chdir: /opt/
+    changed_when: false
 
   - name: Minio | Attach the buckets policy to the test group
     ansible.builtin.shell: mc admin policy attach myminio test-buckets --group test
     args:
       executable: /bin/bash
       chdir: /opt/
+    changed_when: false
 
   - name: Minio | Create AK / SK
     ansible.builtin.shell: "mc admin user svcacct add --access-key \"{{ minio_test_accesskey }}\" --secret-key \"{{ minio_test_secretkey }}\" myminio test1"
@@ -88,6 +94,7 @@
       executable: /bin/bash
       chdir: /opt/
     register: _minio_user
+    changed_when: false
 
   - name: Minio | Dump minio_user
     ansible.builtin.debug:
@@ -99,12 +106,14 @@
     args:
       executable: /bin/bash
       chdir: /opt/
+    changed_when: false
 
   - name: Minio | Upload test-bucket-policy.json to bucket test-1
     ansible.builtin.shell: mc cp test-bucket-policy.json mytest1/test-1/
     args:
       executable: /bin/bash
       chdir: /opt/
+    changed_when: false
 
   - name: Minio | List bucket content
     ansible.builtin.shell: mc ls mytest1/test-1/
@@ -112,6 +121,7 @@
       executable: /bin/bash
       chdir: /opt/
     register: _bucket_content
+    changed_when: false
 
   - name: Minio | Dump _bucket_content
     ansible.builtin.debug:
